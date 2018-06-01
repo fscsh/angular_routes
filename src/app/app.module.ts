@@ -16,6 +16,8 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth-guard.service';
 import { CanDeactivateGuard } from './servers/edit-server/can-deactive-guard.service';
+import { ErrorPageComponent } from './error-page/error-page.component';
+import { ServerResolver } from './servers/server/server-resolver.service';
 
 
 
@@ -25,11 +27,12 @@ const addRoutes: Routes = [
         { path: ':id/:name' ,component: UsersComponent }
     ]},
     { path: 'servers' , canActivateChild: [AuthGuard],  component: ServersComponent ,children:[
-        { path: ':id' ,component: ServerComponent },
+        { path: ':id' ,component: ServerComponent ,resolve: {serversss: ServerResolver}},
         { path: ':id/edit' ,component: EditServerComponent ,canDeactivate: [CanDeactivateGuard]
     }
     ]},
-    {path: 'not-found' ,component: PageNotFoundComponent},
+    // {path: 'not-found' ,component: PageNotFoundComponent},
+    {path: 'not-found' ,component: ErrorPageComponent, data: {message: "Page not found!"} },
     {path: '**' ,redirectTo: '/not-found'},
 ]
 
@@ -42,7 +45,8 @@ const addRoutes: Routes = [
     UserComponent,
     EditServerComponent,
     ServerComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    ErrorPageComponent
   ],
   imports: [
     BrowserModule,
@@ -50,7 +54,7 @@ const addRoutes: Routes = [
     HttpModule,
     RouterModule.forRoot(addRoutes)
   ],
-  providers: [ServersService, AuthService, AuthGuard, CanDeactivateGuard],
+  providers: [ServersService, AuthService, AuthGuard, CanDeactivateGuard, ServerResolver],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
